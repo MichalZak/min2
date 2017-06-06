@@ -1,0 +1,56 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+        Calls
+    </ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="add()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+<div style="padding: 5px;">
+  <ion-segment  [(ngModel)]="sortType">
+    <ion-segment-button (click)="onSortChange('priority')"  ng-selected="true" value="priority">
+      Priority
+    </ion-segment-button>
+    <ion-segment-button (click)="onSortChange('date')" value="date">
+      Date
+    </ion-segment-button>
+    <ion-segment-button (click)="onSortChange('name')" value="name">
+      Name
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of calls" >
+      <button ion-item (click)="view(item._id)" >      
+            <h2>{{item.name}}</h2>
+            <div class="label-note2">
+              Note: {{item.note || 'No Note'}}
+            </div>
+            <ion-note *ngIf='item.visits != null && item.visits.length > 0'>
+              <br/>
+              {{item.visits[0].date}}: {{item.visits[0].note || 'No Visit Note'}}
+            </ion-note>
+            <p item-right align="right">
+              <span ion-text *ngIf='item.date != null' [color]='getDateColor(item.date)' >{{item.date | date:'EEE, MMM dd' }}<span *ngIf='getDayOffset(item.date)'>({{getDayOffset(item.date) || ''}})</span></span><br/>
+              <ion-icon *ngIf="item.callType == 'study'" name="md-book"></ion-icon>
+              <ion-badge item-right *ngIf="item.priority != null" >{{item.priority}}</ion-badge>
+              <ion-badge item-right color='secondary' *ngIf="item.visits != null" >{{item.visits.length}}</ion-badge>
+            </p>
+
+      </button> 
+      <ion-item-options>
+         <button ion-button color="danger" (click)="remove(item)">
+            Delete
+         </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

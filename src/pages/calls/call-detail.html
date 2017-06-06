@@ -1,0 +1,89 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Name: {{call.name}} </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+    <ion-label floating>Name</ion-label>
+    <ion-input type="text" [(ngModel)]="call.name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label floating>Address</ion-label>
+    <ion-input type="text" [(ngModel)]="call.address"></ion-input>
+  </ion-item>
+  <ion-item>
+        <ion-label *ngIf="!call.date" (click)="setBackDate()">Retrun date: click to setup return date</ion-label>
+        <ion-label *ngIf="call.date" (click)="setBackDate()">Return date:</ion-label>
+        <ion-datetime *ngIf="call.date"
+          displayFormat="DDD(D) MMM YYYY" 
+          pickerFormat="DDD(D) MMM YYYY" 
+          placeholder="Select Return Date"
+          dayShortNames="dom, seg, ter, test, test, test, test"
+          [(ngModel)]="call.date">
+        </ion-datetime>
+        <button (click)="setBackDate()" ion-button full outline>Set Come back date</button>
+  </ion-item>
+  <ion-item>
+    <ion-segment [(ngModel)]="call.callType" color="primary">
+      <ion-segment-button value="visit">
+        First Time Visit
+      </ion-segment-button>
+      <ion-segment-button value="rv">
+        Return Visit
+      </ion-segment-button>
+      <ion-segment-button value="study">
+        Study
+      </ion-segment-button>
+    </ion-segment>
+  </ion-item>
+    <rating [(ngModel)]="call.priority" ></rating>
+ <ion-item>
+        <ion-label floating>Note</ion-label>
+        <ion-textarea 
+              fz-elastic
+              [(ngModel)]="call.note" 
+              rows="3" 
+              playholder="Enter your notes here" ></ion-textarea>
+  </ion-item>
+
+  <ion-item>
+    Visits:
+    <ion-list>
+      <ion-item-sliding *ngFor="let item of call.visits; let i = index;" >
+        <button ion-item (click)="viewVisit(item)" >    
+              <div item-left>
+                <div style="float:left;" *ngFor="let placement of item.placements" class="publication-item" >
+                  <img src="{{getPubImage(placement)}}"  height="85" />
+                   <br/><div style="font-size: x-small; text-align: center;" class="publication-text">{{placement.name}}</div>
+                </div> 
+              </div>
+              <ion-note>
+                {{item.note}}                
+              </ion-note>
+               <p item-right align="right">
+                  {{item.date}}
+              </p>
+        </button> 
+        <ion-item-options>
+          <button ion-button color="danger" (click)="removeVisit(i)">
+              Remove
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+  </ion-item>
+
+  
+
+
+
+  <ion-fab top right >
+      <button ion-fab color="primary" (click)="addVisit()"  ><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+
+</ion-content>

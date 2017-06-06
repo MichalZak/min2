@@ -1,0 +1,42 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Monthly Report: {{printMonth()}}</ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="add()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+      <ion-item-sliding *ngFor="let day of month.days; let i = index;" >
+        <button ion-item (click)="view(day.day)" >      
+              <div class="label-note">
+                Plc: {{day.placements}} Vid: {{day.videos}} Hrs: {{day.hours}} RVs: {{day.rvs}}  
+              </div>
+              <p item-right align="right">
+                {{printDate(day.day)}}
+              </p>
+        </button> 
+        <ion-item-options>
+          <button ion-button color="danger" (click)="remove(day, i)">
+              Delete
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+</ion-content>
+ 
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>{{printTotals()}}</ion-title>
+    <ion-buttons end>
+        
+        <ion-datetime displayFormat=" " (ionChange)='monthSelectChange()' pickerFormat="MMMM YYYY" [(ngModel)]="selectedMonth"></ion-datetime>
+        <ion-label class="label-light"><ion-icon isActive="true" name="calendar"></ion-icon> Change Month</ion-label>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

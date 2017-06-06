@@ -1,0 +1,40 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Publications</ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="close()"><ion-icon name="close-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content >
+
+
+<div >
+  <ion-segment [(ngModel)]="language">
+    <ion-segment-button ng-selected="true" value="chs">
+      Chinese
+    </ion-segment-button>
+    <ion-segment-button value="e">
+      English
+    </ion-segment-button>
+  </ion-segment>
+</div>
+
+<div *ngFor="let item of categories">
+      <h2>{{item.heading}}</h2>
+      <ion-scroll scrollX="true">
+          <button *ngFor="let pub of item.publications" (click)="select(pub)" clear class="publication-item" >
+                    <img  src="{{pub.getImage()}}"  height="85"><br/>
+                    {{pub.name}}
+          </button>
+      </ion-scroll>
+</div>
+
+
+
+
+</ion-content>

@@ -1,0 +1,7 @@
+<h2>{{heading}}</h2>
+<ion-scroll scrollX="true">
+    <button *ngFor="let item of publications" (click)="select(item)" clear class="publication-item" >
+              <img  src="{{item.getImage()}}" width="60" height="85"><br/>
+              {{item.name}}
+    </button>
+</ion-scroll>

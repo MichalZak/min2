@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Visit</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item>
+        <ion-label>Date:</ion-label>
+        <ion-datetime
+          displayFormat="DDD(D) MMM YYYY" 
+          pickerFormat="DDD(D) MMM YYYY" 
+          placeholder="Select Return Date"
+          [(ngModel)]="visit.date">
+        </ion-datetime>
+  </ion-item>
+  <ion-item>
+        <ion-label floating>Note</ion-label>
+        <ion-textarea 
+              [(ngModel)]="visit.note" 
+              rows="3" 
+              fz-elastic
+              playholder="Enter your notes here" ></ion-textarea>
+  </ion-item>
+
+
+  <button (click)="addPlacement()"  ion-button icon-left><ion-icon name="book"></ion-icon> Add Placement</button>
+
+  <ion-label>Placements:</ion-label>
+
+  <ion-scroll scrollX="true">
+    <button *ngFor="let pub of visit.placements; let i = index;" (click)="remove(pub, i)" clear class="publication-item" >
+      <img  src="{{getPubImage(pub)}}"  height="85"><br/>
+      {{pub.name}}
+    </button>
+  </ion-scroll>
+
+</ion-content>

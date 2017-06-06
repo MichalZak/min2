@@ -24,12 +24,33 @@ $font-path: "../assets/fonts";
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
-  secondary:  #32db64,
-  danger:     #f53d3d,
-  light:      #f4f4f4,
-  dark:       #222
+  primary:    #7babed,
+  secondary:  #ced6e3,
+  danger:     #f6c2d8,
+  light:      #ced6e3,
+  dark:       #222,
 );
+
+$primaryColor: #7babed;
+$toolbar-background: #7babed;
+$note-ios-color:#fcebbf;
+
+.label-note{
+  color: #7babed;
+}
+
+.label-note2{
+  color: #ced6e3;
+}
+
+.label-light {
+  color: #ffffff;
+}
+
+h2{
+  color: $primaryColor;
+  font-size: 3 rem;
+}
 
 
 // App iOS Variables

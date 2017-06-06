@@ -1,40 +1,46 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { Ionic2RatingModule } from 'ionic2-rating';
+import { ElasticModule  }       from 'angular2-elastic';
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
+import { IonicStorageModule } from '@ionic/storage';
 
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
-import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
 
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import { GetPages } from '../pages';
+import { GetProviders } from '../providers';
+
+
+const cloudSettings: CloudSettings = {
+  'core': {
+    'app_id': '73a9055b'
+  }
+};
+
+
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
-    ContactPage,
-    HomePage,
-    TabsPage
+    GetPages(),
+
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    Ionic2RatingModule,
+    ElasticModule,
+    IonicStorageModule.forRoot(),
+    CloudModule.forRoot(cloudSettings),    
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
-    ContactPage,
-    HomePage,
-    TabsPage
+    GetPages(),
+
   ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
-  ]
+ providers: GetProviders(),  
 })
 export class AppModule {}

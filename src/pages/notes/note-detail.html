@@ -1,0 +1,24 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Note: {{note.title}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+      <ion-item>
+        <ion-label floating>Title</ion-label>
+        <ion-input type="text" name="title" required [(ngModel)]="note.title"></ion-input>
+      </ion-item>
+        <rating [(ngModel)]="note.priority" max="5" ></rating>
+      <ion-item>
+        <ion-label floating>Note</ion-label>
+        <ion-textarea [(ngModel)]="note.note" name="note"  fz-elastic
+              rows="5" playholder="Enter your note here" ></ion-textarea>
+      </ion-item>
+
+      <button full ion-button color="secondary" (click)="cleanLeave()" >Leave Without Saving</button>
+</ion-content>

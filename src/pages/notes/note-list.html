@@ -1,0 +1,34 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+        Notes
+    </ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only (click)="add()"><ion-icon name="add-circle"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of notes" >
+      <button ion-item (click)="view(item)" >      
+            <h2>{{item.title}}</h2>
+            <ion-note>
+              {{item.note }}
+            </ion-note>
+            <p item-right align="right">
+              <ion-badge item-right *ngIf="item.priority != null" >{{item.priority}}</ion-badge>
+           </p>
+      </button> 
+      <ion-item-options>
+         <button ion-button color="danger" (click)="remove(item)">
+            Delete
+         </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

@@ -3,20 +3,43 @@ import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { TabsPage } from '../pages/tabs/tabs';
+//prividers
+import { Settings, Placements, DataProvider } from '../providers';
+
+//pages
+import { TabsPage } from '../pages/';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = TabsPage;
+  rootPage:any;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(public platform: Platform,
+              public statusBar: StatusBar, 
+              splashScreen: SplashScreen,
+              public settings: Settings,
+              public placements: Placements,
+              public dataProvider: DataProvider) {
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+      
+      
+      settings.load().then(res=>{
+          //console.log("AppComponent -> Settings-> Load: "+JSON.stringify(res));
+          console.log("App Component Load");
+
+          placements.syncData();
+
+          dataProvider.init().then(()=>{
+            this.rootPage = TabsPage;    
+          });
+
+
+       });
+
       statusBar.styleDefault();
       splashScreen.hide();
     });
   }
 }
+
