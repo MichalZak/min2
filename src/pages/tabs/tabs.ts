@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Tab1Root } from '../';
 import { Tab2Root } from '../';
 import { Tab3Root } from '../';

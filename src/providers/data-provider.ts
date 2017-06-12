@@ -5,6 +5,7 @@ import PouchDB from 'pouchdb';
 import { saveIntoArray } from '../utils';
 import { Doc } from '../models';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { LogProvider } from './logs'
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
@@ -27,8 +28,8 @@ export class DataProvider {
     auto_compaction: true
   } 
 
-  constructor(private platform: Platform) {
-    console.log('Hello DataProvider');
+  constructor(private platform: Platform, public logs: LogProvider,) {
+    this.logs.print('Hello DataProvider');
 
     this.dataStore = {docs:[]};
     this._docs = <BehaviorSubject<Doc[]>>new BehaviorSubject([]);
@@ -43,7 +44,7 @@ export class DataProvider {
   }
 
   initRemote(url:string){
-    console.log("DataProvider:", url);
+    this.logs.print("DataProvider:", url);
     this.initRemotePouch(url);
   }
 
@@ -83,23 +84,63 @@ export class DataProvider {
     return this._docs.asObservable().map(doc => {
       return doc.filter((doc,idx)=> doc.type === type)
     }).do(doc =>{
-     // console.log('Filter docs:'+JSON.stringify(doc));
+     // this.logs.print('Filter docs:'+JSON.stringify(doc));
     })
   }
 
 
   save(doc:Doc): Promise<any>{
     return new Promise((resolve,reject) =>{
-      console.log('DataProvider->save doc: ', doc);
+      this.logs.print('DataProvider->save doc: ', doc);
+      //update modified date
+      doc['modified_timestamp'] = Date.now();
       this._pouch.put(doc)
         .then((res)=>{
           resolve(res);
         })
         .catch(err=>{
-          console.log('Datarovider Save Error:'+JSON.stringify(err));
-          reject(err);
+          this.logs.print('Datarovider Save Error:'+JSON.stringify(err));
+          //reject(err);
         }); 
       })
+  }
+
+ mergeMultipleDocs(docs:Array<any>){
+    return new Promise((resolve,reject) =>{  
+      docs.forEach(doc => {
+        try{
+          //see if we already have this doc
+          this.hardSave(doc);
+        }
+        catch(e){
+          this.logs.print("Got Merge Error");
+          this.logs.print(e);
+        }
+      });
+      resolve(true);
+    });
+  }
+
+  //smart force save docs
+  async hardSave(doc:Doc){
+    try{
+      let old = await this._pouch.get(doc._id);
+      this.logs.print("Found Old doc", doc);
+
+      if(old['modified_timestamp'] < doc['modified_timestamp']){
+        this.logs.print('saving...');
+        doc._rev = old._rev;
+        this.save(doc);
+      }
+    }
+    catch(e){
+      this.logs.print(e);
+      if(e['message']=='missing'){
+        //lets create new doc
+        delete doc['_rev'];
+        this.save(doc);
+      }
+    }
   }
 
   remove(doc:Doc): Promise<Doc>{
@@ -115,18 +156,18 @@ export class DataProvider {
     return new Promise(resolve=>{
       //first lets make sure we have the file
       this._pouch.get(doc._id).then(res=>{
-        console.log("Got doc", res);
+        this.logs.print("Got doc", res);
         this._pouch.putAttachment(doc._id, filename, doc._rev, file, type).then(res =>{
-          console.log('Added file', res);
+          this.logs.print('Added file', res);
         });
       }).catch(err=>{
-        console.log("AddAttachment error loading doc: ", err);
+        this.logs.print("AddAttachment error loading doc: ", err);
         //save doc first then add attachments
         //make sure doc has a name
         this.save(doc).then(res2=>{
-          console.log("Saved Doc", res2);
+          this.logs.print("Saved Doc", res2);
           this._pouch.putAttachment(res2.id, filename, res2.rev, file, type).then(res3 =>{
-            console.log('Added file', res3);
+            this.logs.print('Added file', res3);
         });
         })
       })
@@ -138,10 +179,10 @@ export class DataProvider {
   getAttachment(doc:Doc, filename:string):Promise<any>{
     return new Promise(resolve=>{
       this._pouch.getAttachment(doc, filename).then(res=>{
-        console.log("Got File", res); 
+        this.logs.print("Got File", res); 
         resolve(res);
       }).catch(err=>{
-        console.log("Error loading file:", err);
+        this.logs.print("Error loading file:", err);
         resolve(null);
       })
     });
@@ -150,15 +191,15 @@ export class DataProvider {
 
 
   private removeSuccessful(doc:Doc){
-    //console.log('DocReducer->REMOVE_SUCCESS: '+JSON.stringify(doc));
+    //this.logs.print('DocReducer->REMOVE_SUCCESS: '+JSON.stringify(doc));
     this.dataStore.docs = this.dataStore.docs.filter(d=>d._id !== doc._id);
-    //console.log('remove filter:'+JSON.stringify(this.dataStore.docs));
+    //this.logs.print('remove filter:'+JSON.stringify(this.dataStore.docs));
     this._docs.next(this.dataStore.docs);
   }
 
   private saveSuccessful(doc:Doc){
     //this.dataStore.docs.push(doc);
-    //console.log('Save successfull:'+JSON.stringify(this.dataStore.docs));
+    //this.logs.print('Save successfull:'+JSON.stringify(this.dataStore.docs));
     this.dataStore.docs = saveIntoArray(doc, this.dataStore.docs);
     this._docs.next(this.dataStore.docs);
   }
@@ -174,7 +215,7 @@ export class DataProvider {
   private initPouch(pouchName:string, connectRemote:boolean=false):Promise<any> {
     return new Promise((resolve,reject) =>{
 
-      console.log('DataProvider->initDB localName: '+JSON.stringify(pouchName));
+      this.logs.print('DataProvider->initDB localName: '+JSON.stringify(pouchName));
       this.platform.ready().then(()=>{
         this._pouch = new PouchDB(pouchName, this._localPouchOptions);
         window['PouchDB'] = PouchDB;//make it visible for chrome extension
@@ -183,7 +224,7 @@ export class DataProvider {
         //lets init db, and load all the docs
         this._pouch.allDocs({include_docs: true})
           .then(doc => {
-            console.log("Init Data Docs: "+JSON.stringify(doc));
+            this.logs.print("Init Data Docs: "+JSON.stringify(doc));
             //this.loadAllDocs(doc.rows);
             let state:Doc[] = doc.rows.map(row => row.doc);
             this.loadAllDocs(state);
@@ -193,12 +234,12 @@ export class DataProvider {
         //now watch for changes
         this._pouch.changes({live: true, since: 'now', include_docs:true})
           .on('change', change => {
-            console.log('Changes obj:'+JSON.stringify(change));
+            this.logs.print('Changes obj:'+JSON.stringify(change));
             if (change['deleted']) {
                   this.removeSuccessful(change.doc);
               } 
               else {
-                console.log('PouchChange:'+JSON.stringify(change));
+                this.logs.print('PouchChange:'+JSON.stringify(change));
                   this.saveSuccessful(change.doc); 
               }
           })
@@ -208,7 +249,7 @@ export class DataProvider {
   }
 
   private initRemotePouch(remotedb:string){
-    console.log("DataProvider init Remote url: "+JSON.stringify(remotedb));    
+    this.logs.print("DataProvider init Remote url: "+JSON.stringify(remotedb));    
     this._pouchRemote = new PouchDB(remotedb);
 
     this._pouch.replicate.from(this._pouchRemote, {
@@ -217,22 +258,22 @@ export class DataProvider {
     })
         .on('change', function (info) {
           // handle change
-          console.log('DataProvider Pouch Sync OnChange:', info);
+          this.logs.print('DataProvider Pouch Sync OnChange:', info);
         }).on('paused', function (err) {
           // replication paused (e.g. replication up to date, user went offline)
-          console.log('DataProvider Pouch Sync OnPaused:', err);
+          this.logs.print('DataProvider Pouch Sync OnPaused:', err);
         }).on('active', function () {
           // replicate resumed (e.g. new changes replicating, user went back online)
-          console.log('DataProvider Pouch Sync OnActive');
+          this.logs.print('DataProvider Pouch Sync OnActive');
         }).on('denied', function (err) {
           // a document failed to replicate (e.g. due to permissions)
-          console.log('DataProvider Pouch Sync OnDenied:', err);
+          this.logs.print('DataProvider Pouch Sync OnDenied:', err);
         }).on('complete', function (info) {
           // handle complete
-          console.log('DataProvider Pouch Sync OnComplete:', info);
+          this.logs.print('DataProvider Pouch Sync OnComplete:', info);
         }).on('error', function (err) {
           // handle error
-          console.log('DataProvider Pouch Sync OnErr:',err);
+          this.logs.print('DataProvider Pouch Sync OnErr:',err);
         });
     }
 

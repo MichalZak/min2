@@ -1,0 +1,10 @@
+{
+  "resolution": "main",
+  "tree": {
+    "src": "B:\\jw\\min\\node_modules\\text-encoding-shim\\package.json",
+    "raw": "npm:text-encoding-shim",
+    "main": "index.js",
+    "version": "1.0.0",
+    "name": "text-encoding-shim"
+  }
+}

@@ -1,0 +1,40 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Dropbox Backup
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <h2>Dropbox Sync</h2>
+  <p>Dropbox is one of the easiest ways to backup your data.  
+    All you need is sign up for dropbox free account and login
+    through our app.</p>
+
+  <button  ion-button full (click)="goToDropboxAuth()" >Dropbox Sync</button>
+  <p>Click here to initiate a backup.  If you haven't login in previously, you 
+    will be redirected to Dropbox login page.</p>
+
+  <ion-list>
+
+  <ion-item>
+    <ion-label floating>Auth Token</ion-label>
+    <ion-input type="text" [(ngModel)]="token"></ion-input>
+    <ion-note>You can manually specify Dropbox Authentication token.</ion-note>
+  </ion-item>
+
+  <ion-item>
+    <ion-label floating>Backup Filename</ion-label>
+    <ion-input type="text" [(ngModel)]="filename"></ion-input>
+  </ion-item>
+  <ion-item>
+    <button  ion-button full (click)="saveDropboxSettings()" >Save Settings</button>
+    It is best not to modify these values, unless you fully understand what you are doing.
+  </ion-item>
+
+</ion-list>
+
+</ion-content>

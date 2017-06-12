@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "text-encoding-shim": "npm:text-encoding-shim"
+  }
+}

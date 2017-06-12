@@ -3,8 +3,11 @@ import { NavController, NavParams, Events } from 'ionic-angular';
 import { DataProvider } from '../../providers';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { Platform } from 'ionic-angular'; 
-
+import { DropboxProvider } from '../../providers/dropbox';
+import { ToastController } from 'ionic-angular';
 //import { EmailComposer } from '@ionic-native/email-composer';
+
+
 
 @Component({
   selector: 'page-about',
@@ -18,7 +21,9 @@ export class AboutPage {
               public platform: Platform,
               public navParams: NavParams, 
               public emailComposer: EmailComposer,
+              public toastCtrl: ToastController,
               public dataProvider: DataProvider, 
+              public dropbox: DropboxProvider,
               public events:Events) {}
 
   ionViewDidLoad() {
@@ -30,10 +35,7 @@ export class AboutPage {
     //console.log("Languages: ", this.languages);
   }
 
-  goToAuth(){
-      //this.navCtrl.push(WelcomePage);
-  }
-
+  
   emailBackup(){
     if (this.platform.is('cordova')) {  
       try {
@@ -72,6 +74,15 @@ export class AboutPage {
       console.log("Email plugin not available");
     }
   }
+
+  logsView(){
+    this.navCtrl.push('LogsPage');
+  }
+
+  dropboxView(){
+    this.navCtrl.push('DropboxPage');
+  }
+
 
 
 

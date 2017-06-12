@@ -6,6 +6,7 @@ export function getConfig(){
     return {
        test:'test',
        database_properties: "https://couch.mzlabs.net/min_prop",
+       dropbox_filename: 'backup.min',
        //database_user: "localhost:3035", //don't include http
        //database_user_protocol: "http",
        //web_url: "http://localhost:3035"
