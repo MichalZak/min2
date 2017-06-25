@@ -23,21 +23,20 @@
           displayFormat="DDD(D) MMM YYYY" 
           pickerFormat="DDD(D) MMM YYYY" 
           placeholder="Select Return Date"
-          dayShortNames="dom, seg, ter, test, test, test, test"
           [(ngModel)]="call.date">
         </ion-datetime>
         <button (click)="setBackDate()" ion-button full outline>Set Come back date</button>
   </ion-item>
   <ion-item>
     <ion-segment [(ngModel)]="call.callType" color="primary">
-      <ion-segment-button value="visit">
-        First Time Visit
-      </ion-segment-button>
       <ion-segment-button value="rv">
         Return Visit
       </ion-segment-button>
       <ion-segment-button value="study">
         Study
+      </ion-segment-button>
+      <ion-segment-button value="stopped">
+        Stopped
       </ion-segment-button>
     </ion-segment>
   </ion-item>

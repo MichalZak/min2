@@ -123,7 +123,10 @@ export class TimeMonthPage {
   add(){
     let d:number = 1;
 
-    if(this.month._id == moment().format('YYYYMM'))
+    console.log("this.month._id: ", this.month._id);
+    console.log("Moment", moment().format('YYYYMM'));
+    console.log("Date", moment().date());
+    if(this.month._id == "min/month/"+moment().format('YYYYMM'))
       d= moment().date();
 
     this.view(d);

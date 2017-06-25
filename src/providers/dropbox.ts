@@ -13,7 +13,8 @@ import { TextDecoder } from 'text-encoding-shim';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
- 
+import {delay} from "../utils";
+
 @Injectable()
 export class DropboxProvider {
  
@@ -42,7 +43,7 @@ export class DropboxProvider {
       this.redirectURI = 'http://localhost';
     }
     else {
-      this.redirectURI = 'http://localhost:8100';
+      this.redirectURI = 'https://min.mzlabs.net';
       //test if we have initiated sync
       if(this.settings.getValue('DropboxSyncOnNextLoad')){
         this.dataSync();
@@ -75,6 +76,11 @@ export class DropboxProvider {
       }
       
       //backup new data
+      await setTimeout(function() {
+        console.log("timeout");
+      }, 1000)
+      await delay(2000);
+      console.log("end timeout");
       await this.uploadNewFile();
       return "Backup Successfull";
     }
@@ -196,6 +202,7 @@ export class DropboxProvider {
 
   generateFile():string {
       let data = JSON.stringify(this.dataProvider.getAllDocs());
+      console.log('Saving New File', this.dataProvider.getAllDocs());
       let e = CryptoJS.AES.encrypt(data, this.key);
 
       this.logs.print("Encrypted: ");

@@ -5,6 +5,7 @@ export class Doc {
     public _rev?:string;
     public _deleted?:boolean;
     public type?:string; //this is to distinguish different doc types
+    modified_timestamp?:number;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
@@ -48,6 +49,7 @@ export class Day {
     books?: number = 0;
     tracks?: number = 0;
     mags?:number = 0;
+    modified_timestamp?:number;
 
     placements?: number = 0;
 
@@ -77,6 +79,16 @@ export class Month extends Doc {
     studentSum?: number;
     students?: Student[];
 
+    findDay(day:number):Day{
+        let dd:Day = null;
+        this.days.forEach(d=> {
+            if(d.day == day)
+                dd=d;
+        });
+
+        return dd;
+    }
+
     static findDay(month:Month, date:number):Day{
         if (month.days == null){
             month.days = new Array<Day>();
@@ -93,6 +105,8 @@ export class Month extends Doc {
         return day;
     
      }
+
+
 
      static printDate(date:number, month:Month):string{
          let d:string;

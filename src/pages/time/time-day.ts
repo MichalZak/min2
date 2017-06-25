@@ -111,6 +111,7 @@ export class TimeDayPage {
     console.log('Day Selected', dayNum)
 
     //lets save the previous day
+    this.day.modified_timestamp = Date.now();
     this.month.days = saveIntoArray(this.day, this.month.days, "day");
 
     //lets change day
@@ -176,8 +177,11 @@ export class TimeDayPage {
     console.log("Params DAY",this.navParams.get("day"));
     console.log("Equal", _.isEqual(this.day, this.navParams.get('day')));
 
+    this.day.modified_timestamp = Date.now();
+    //this.month.days[this.day.day] = Object.assign({}, this.day);
+
     this.month.days = saveIntoArray(this.day, this.month.days, "day");
-    this.month.days = this.month.days.filter(day=>Day.checkIfHasActivity(day));
+    //this.month.days = this.month.days.filter(day=>Day.checkIfHasActivity(day));
     this.month.days = _.orderBy(this.month.days, ['day'], ['asc']);
 
     this.dataProvider.save(this.month);

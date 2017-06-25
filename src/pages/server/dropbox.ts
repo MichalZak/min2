@@ -46,7 +46,8 @@ export class DropboxPage {
     
     let toast = this.toastCtrl.create({
       message: m,
-      duration: 3000
+      position: 'middle',
+      duration: 2000
     });
     toast.present();
 

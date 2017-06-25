@@ -3,9 +3,10 @@ import { Observable } from 'rxjs/Observable';
 import { Platform } from 'ionic-angular'; 
 import PouchDB from 'pouchdb';
 import { saveIntoArray } from '../utils';
-import { Doc } from '../models';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import {Doc, Month} from '../models';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import { LogProvider } from './logs'
+import * as _ from "lodash";
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/do';
@@ -105,43 +106,69 @@ export class DataProvider {
       })
   }
 
- mergeMultipleDocs(docs:Array<any>){
-    return new Promise((resolve,reject) =>{  
-      docs.forEach(doc => {
-        try{
-          //see if we already have this doc
-          this.hardSave(doc);
-        }
-        catch(e){
-          this.logs.print("Got Merge Error");
-          this.logs.print(e);
-        }
-      });
-      resolve(true);
-    });
+ async mergeMultipleDocs(docs:Array<any>){
+    for (let doc of docs){
+      try{
+        //see if we already have this doc
+        await this.hardSave(doc);
+      }
+      catch(e){
+        this.logs.print("Got Merge Error");
+        this.logs.print(e);
+      }
+    }
   }
 
   //smart force save docs
-  async hardSave(doc:Doc){
+  async hardSave(newDoc:Doc){
     try{
-      let old = await this._pouch.get(doc._id);
-      this.logs.print("Found Old doc", doc);
+      let currentDoc = await this._pouch.get(newDoc._id);
+      this.logs.print("Found Old doc", currentDoc);
 
-      if(old['modified_timestamp'] < doc['modified_timestamp']){
+      if(currentDoc['modified_timestamp'] < newDoc['modified_timestamp'] && newDoc.type != 'month'){
         this.logs.print('saving...');
-        doc._rev = old._rev;
-        this.save(doc);
+        newDoc._rev = currentDoc._rev;
+        await this.save(newDoc);
+      }
+
+      if(newDoc.type == 'month'){
+        let newMonth = new Month(newDoc);
+        console.log("@@@Saving Month Record");
+        console.log("NewMonth", newMonth);
+        console.log("CurrentMonth", currentDoc);
+        if(currentDoc['days']){
+            currentDoc.days.forEach(cDay=>{
+              let nDay = newMonth.findDay(cDay.day);
+              if(nDay){
+                if(cDay.modified_timestamp > nDay.modified_timestamp)
+                   newMonth.days = saveIntoArray(cDay, newMonth.days, "day");
+              }
+              else{
+                newMonth.days = saveIntoArray(cDay, newMonth.days, "day");
+              }
+            });
+          }
+        
+        newMonth._rev = currentDoc._rev;
+        newMonth.modified_timestamp = Date.now();
+        newMonth.days = _.orderBy(newMonth.days, ['day'], ['asc']);
+        console.log("Saving Month", newMonth);
+        await this.save(newMonth);
+        
       }
     }
     catch(e){
       this.logs.print(e);
       if(e['message']=='missing'){
         //lets create new doc
-        delete doc['_rev'];
-        this.save(doc);
+        delete newDoc['_rev'];
+        this.save(newDoc);
       }
     }
   }
+
+
+
 
   remove(doc:Doc): Promise<Doc>{
     return new Promise((res,rej) =>{

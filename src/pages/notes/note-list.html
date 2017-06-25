@@ -17,7 +17,7 @@
     <ion-item-sliding *ngFor="let item of notes" >
       <button ion-item (click)="view(item)" >      
             <h2>{{item.title}}</h2>
-            <ion-note>
+            <ion-note class="label-note2" >
               {{item.note }}
             </ion-note>
             <p item-right align="right">
