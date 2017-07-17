@@ -91,5 +91,17 @@ save(){
    this.navCtrl.push(CallVisitPage,{visit:visit, callid:this.call._id});
  }
 
+ addDay(){
+  this.call.date =  moment(this.call.date).add(1,"d").format('YYYY-MM-DD');
+ }
+
+ removeDay(){
+  this.call.date =  moment(this.call.date).subtract(1,"d").format('YYYY-MM-DD');
+ }
+
+ clearDate(){
+  this.call.date =  null;
+ }
+
 
 }

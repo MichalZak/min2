@@ -13,8 +13,8 @@
     <ion-input type="text" [(ngModel)]="call.name"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-label floating>Address</ion-label>
-    <ion-input type="text" [(ngModel)]="call.address"></ion-input>
+        <ion-label floating>Address</ion-label>
+        <ion-input type="text" [(ngModel)]="call.address"></ion-input>
   </ion-item>
   <ion-item>
         <ion-label *ngIf="!call.date" (click)="setBackDate()">Retrun date: click to setup return date</ion-label>
@@ -25,7 +25,12 @@
           placeholder="Select Return Date"
           [(ngModel)]="call.date">
         </ion-datetime>
-        <button (click)="setBackDate()" ion-button full outline>Set Come back date</button>
+        <p item-right *ngIf="call.date" align="right">  
+            <button ion-fab mini (click)="addDay()" ><ion-icon name="add"></ion-icon></button>
+            <button ion-fab mini (click)="removeDay()" ><ion-icon name="remove"></ion-icon></button>
+            <button ion-fab mini (click)="clearDate()" ><ion-icon name="close"></ion-icon></button>
+        </p>
+        <button (click)="setBackDate()"  ion-button full outline>Set Come back date</button>
   </ion-item>
   <ion-item>
     <ion-segment [(ngModel)]="call.callType" color="primary">

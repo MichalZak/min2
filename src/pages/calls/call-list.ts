@@ -17,6 +17,7 @@ import * as moment from 'moment';
 export class CallListPage {
 
   public calls:Call[];
+  public all:Call[];
   public subscription:any;
   public sortType:string = 'priority';
 
@@ -29,7 +30,7 @@ export class CallListPage {
   }
 
   onSortChange(type:string){
-    this.calls = this.sortRecords(this.calls, type);
+    this.calls = this.sortRecords(this.all, type);
     this.ref.markForCheck();
     console.log("Sorting Ended", this.calls);
   }
@@ -40,7 +41,8 @@ export class CallListPage {
 
     this.subscription = this.dataProvider.getDocsObservable('call').subscribe(
       docs =>{
-        this.calls = this.sortRecords(docs, this.sortType);
+        this.all = docs;
+        this.calls = this.sortRecords(this.all, this.sortType);
         this.ref.markForCheck();
       },
       err =>{
@@ -130,12 +132,27 @@ export class CallListPage {
 
 
   sortRecords(records:Array<any>, sortType:string):any{
-    if(sortType === 'priority')
-      return records.sort(this.sortByPriority);
-    else if(sortType === 'date')
-      return records.sort(this.sortByDate);
-    else
-      return records.sort(this.sortByName)    
+    if(sortType === 'priority'){
+        console.log("Sort Priority");
+        let docs  = records.filter(doc => (doc['callType']!= "stopped") )
+        return records.filter(doc => doc['callType']!= "stopped" )
+                       .sort(this.sortByPriority);
+    }    
+    else if(sortType === 'date'){
+      console.log("Sort Date");
+      return records.filter(doc => (doc['callType']!= "stopped") )
+                    .sort(this.sortByDate);
+    }
+    else if(sortType === "name"){
+      console.log("Sort Name");
+      return records.filter(doc => (doc['callType']!= "stopped") )
+                    .sort(this.sortByName);
+    }
+    else{
+      console.log("Sort Inactive");
+      return records.filter(doc => (doc['callType'] === "stopped") )
+                    .sort(this.sortByName);
+    }    
   }
 
 
@@ -174,8 +191,8 @@ export class CallListPage {
     let aa; 
     let bb; 
 
-    aa = a.date || '';
-    bb = b.date || '';
+    aa = a.date || 'zzzzzz';
+    bb = b.date || 'zzzzzz';
 
     if(aa < bb)
       return -1;
@@ -206,8 +223,8 @@ export class CallListPage {
       return 1;
 
 
-    aa = a.date || '';
-    bb = b.date || '';
+    aa = a.date || 'zzzzzz';
+    bb = b.date || 'zzzzzz';
 
     if(aa < bb)
       return -1;

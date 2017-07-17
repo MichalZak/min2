@@ -119,7 +119,7 @@ export class Month extends Doc {
 
      static totals(month:Month):any{
          if(month.days == null) month.days = new Array<Day>();
-         return month.days.reduce((acc:number, day)=>{
+         return month.days.reduce((acc:Day, day)=>{
              acc['placements'] += day.placements;
              acc['videos'] += day.videos;
              acc['hours'] += day.hours;
@@ -143,7 +143,6 @@ export class Call extends Doc {
     note?: string;
     date?: string;
     priority?: number;
-    sticky?: boolean; //use bonfire to stick on top
     callType?: string;
     visits?: Visit[];
 
