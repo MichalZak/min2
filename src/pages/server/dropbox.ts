@@ -13,6 +13,7 @@ export class DropboxPage {
 
   public token: string;
   public filename: string;
+  public autoBackup: boolean;
 
   constructor(public toastCtrl: ToastController, 
               public settings: Settings,
@@ -26,9 +27,19 @@ export class DropboxPage {
   ionViewWillEnter() {
     this.token = this.settings.getValue('dropbox_token');
     this.filename = this.settings.getValue('dropbox_filename');
+    this.autoBackup = this.settings.getValue('dropbox_auto');
     //this.languages = this.dataProvider.getDoc('pub/global/languages');
     //console.log("Languages: ", this.languages);
   }
+
+  dropBoxAutoChanged(){
+    console.log("dropBoxAutoChanged: "+this.autoBackup);
+    this.settings.setValue('dropbox_auto', this.autoBackup);
+
+  }
+   
+
+
 
   saveDropboxSettings(){
     this.settings.setValue('dropbox_token', this.token);

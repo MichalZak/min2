@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, ResponseContentType  } from '@angular/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
-import { Platform } from 'ionic-angular';
+import { Platform, Events } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import Dropbox  from 'dropbox';
 import { DataProvider } from './data-provider';
@@ -18,12 +18,16 @@ import {delay} from "../utils";
 @Injectable()
 export class DropboxProvider {
  
+  static SYNC_ON_NEXT_LOAD:string = "DropboxSyncOnNextLoad";
+
+
+  initialized:boolean;
   accessToken: any;// = "d-e6T61aqsoAAAAAAAAgekf6inrXDPP0QuOIYELJ03rOniXWAQxgMsEJgyIfC8q0";
   filename:string;
   folderHistory: any = [];
   appKey: any;
   redirectURI: any;
-  url: any;
+
 
 
 
@@ -36,27 +40,42 @@ export class DropboxProvider {
                public iab: InAppBrowser,
                public settings: Settings,
                public logs: LogProvider,
+               public events: Events,
                public dataProvider: DataProvider) {
-    //OAuth
-    this.appKey = 'b8sn92hzgcgspmo';
-    if(this.platform.is('cordova')){
-      this.redirectURI = 'http://localhost';
-    }
-    else {
-      this.redirectURI = 'https://min.mzlabs.net';
-      //test if we have initiated sync
-      if(this.settings.getValue('DropboxSyncOnNextLoad')){
-        this.dataSync();
-        this.settings.setValue('DropboxSyncOnNextLoad',false);
-      }
-    }
 
-    this.filename = this.settings.getValue('dropbox_filename');
-    
-    this.url = 'https://www.dropbox.com/1/oauth2/authorize?client_id=' + this.appKey + '&redirect_uri=' + this.redirectURI + '&response_type=token';
- 
- 
   }
+
+  init(){
+      if(this.initialized) return;
+
+      //OAuth
+      this.appKey = 'b8sn92hzgcgspmo';
+
+      if(this.platform.is('cordova')){
+        this.redirectURI = 'http://localhost';
+      }
+      else {
+        //this.redirectURI = 'https://min.mzlabs.net';
+        this.redirectURI = 'http://localhost:8100';
+      }
+
+      this.filename = this.settings.getValue('dropbox_filename');
+
+      if(this.settings.getValue('DropboxSyncOnNextLoad')){
+          this.dataSync();
+          this.settings.setValue('DropboxSyncOnNextLoad',false);
+      }
+
+      this.events.subscribe("InitiateDropboxSync", ()=>{
+          this.dataSync().then(()=>{
+            console.log("Dropbox Sync Success");
+          })
+          .catch(err=>{
+            console.log("Error Auto Dropbox Sync: ", err);
+          });
+      });
+  }
+
 
   async dataSync(){
     //login
@@ -91,13 +110,16 @@ export class DropboxProvider {
   }
 
   login(){
+    this.init();
     this.logs.print("Dropbox", "Login");
     return new Promise((resolve, reject) => {
+      let url = 'https://www.dropbox.com/1/oauth2/authorize?client_id=' + this.appKey + '&redirect_uri=' + this.redirectURI + '&response_type=token';
+ 
       let browser;
       if(this.platform.is('cordova'))
-        browser = this.iab.create(this.url, '_blank');
+        browser = this.iab.create(url, '_blank');
       else
-        browser = this.iab.create(this.url, '_self');
+        browser = this.iab.create(url, '_self');
 
       let listener = browser.on('loadstart').subscribe((event: any) => {
    

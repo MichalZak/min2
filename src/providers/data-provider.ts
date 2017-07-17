@@ -251,7 +251,7 @@ export class DataProvider {
         //lets init db, and load all the docs
         this._pouch.allDocs({include_docs: true})
           .then(doc => {
-            this.logs.print("Init Data Docs: "+JSON.stringify(doc));
+            //this.logs.print("Init Data Docs: "+JSON.stringify(doc));
             //this.loadAllDocs(doc.rows);
             let state:Doc[] = doc.rows.map(row => row.doc);
             this.loadAllDocs(state);

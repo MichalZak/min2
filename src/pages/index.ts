@@ -22,7 +22,8 @@ import { TimeYearPage } from './time/time-year';
 export const MainPage = TabsPage;
 
 // The initial root pages for our tabs (remove if not using tabs)
-export const Tab1Root = TimeMonthPage;
+//export const Tab1Root = TimeMonthPage;
+export const Tab1Root = AboutPage;
 export const Tab2Root = CallListPage;
 export const Tab3Root = NoteListPage;
 export const Tab4Root = AboutPage;

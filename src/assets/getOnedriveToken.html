@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Onedrive AuthPage</title>
+</head>
+<body>
+    <b>
+    Please wait we are redirecting to the onedrive authentication page.
+</b>
+    <form id="onedrivetoken"></form>
+
+    <script>
+        var form = document.getElementById("onedrivetoken");
+        form.method="post";
+        form.setAttribute("action",'https://login.microsoftonline.com/common/oauth2/v2.0/token');
+
+        var items = location.search.substr(1).split("&");
+        for (var index = 0; index < items.length; index++) {
+            tmp = items[index].split("=");
+
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", tmp[0] );
+            hiddenField.setAttribute('value', tmp[1]);
+            form.appendChild(hiddenField);
+            
+        }
+        form.submit();
+    </script>
+</body>
+</html>

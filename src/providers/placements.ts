@@ -53,7 +53,7 @@ export class Placements {
       //lets init db, and load all the docs
       this._pouch.allDocs({include_docs: true})
         .then(doc => {
-          console.log("Init Docs: "+JSON.stringify(doc));
+          //console.log("Init Docs: "+JSON.stringify(doc));
 
           
           //this.loadAllDocs(doc.rows);
@@ -91,7 +91,7 @@ export class Placements {
 
 
   private initRemotePouch(remotedb:string){
-    console.log("DataProvider init Remote url: "+JSON.stringify(remotedb));    
+    //console.log("DataProvider init Remote url: "+JSON.stringify(remotedb));    
     this._pouchRemote = new PouchDB(remotedb);
 
     this._pouch.replicate.from(this._pouchRemote)

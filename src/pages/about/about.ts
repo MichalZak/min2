@@ -83,6 +83,10 @@ export class AboutPage {
     this.navCtrl.push('DropboxPage');
   }
 
+  onedriveView(){
+    this.navCtrl.push('OnedrivePage');
+  }
+
 
 
 

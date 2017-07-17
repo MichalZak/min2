@@ -1,5 +1,12 @@
 {
   "name": "min",
   "app_id": "eff49d0b",
-  "type": "ionic-angular"
+  "type": "ionic-angular",
+
+  "proxies": [
+    {
+      "path": "/onedriveGetToken",
+      "proxyUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+    }
+  ]
 }
