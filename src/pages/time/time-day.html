@@ -24,7 +24,7 @@
     <p item-middle class="numbers" align="center">
       {{day.placements}}
     </p>
-    <p item-right align="right">
+    <p  style="width:120px;" item-right align="right">
       <button ion-fab mini (click)="changeRecord('placement', true)"><ion-icon name="add"></ion-icon></button>
       <button ion-fab mini (click)="changeRecord('placement', false)"><ion-icon name="remove"></ion-icon></button>
     </p>
@@ -37,7 +37,7 @@
     <p item-middle align="center" class="numbers">
       {{day.videos}}
     </p>
-    <p item-right align="right">
+    <p  style="width:120px;" item-right align="right">
       <button ion-fab mini (click)="changeRecord('videos', true)"><ion-icon name="add"></ion-icon></button>
       <button ion-fab mini (click)="changeRecord('videos', false)"><ion-icon name="remove"></ion-icon></button>
     </p>
@@ -50,10 +50,16 @@
     <p item-middle align="center"class="numbers" >
       {{day.hours}}
     </p>
-    <p item-right align="right">
-      <button ion-fab mini (click)="changeRecord('hours', true)"><ion-icon name="add"></ion-icon></button>
-      <button ion-fab mini (click)="changeRecord('hours', false)"><ion-icon name="remove"></ion-icon></button>
-    </p>
+    <div  style="width:120px;" item-right align="right">
+      <div>
+        <button style="float: left;" ion-fab mini (click)="changeRecord('hours', true)"><ion-icon name="add"></ion-icon></button>
+        <button style="float: left;"  color="secondary"  ion-fab mini (click)="changeRecord('hours', true, 0.5)"><ion-icon name="add"></ion-icon></button>
+      </div>
+      <div>
+        <button style="float: left;"  ion-fab mini (click)="changeRecord('hours', false)"><ion-icon name="remove"></ion-icon></button>
+        <button style="float: left;"  color="secondary"   ion-fab mini (click)="changeRecord('hours', false)"><ion-icon name="remove"></ion-icon></button>
+      </div>
+    </div>
   </ion-item>
 
   <ion-item>
@@ -63,7 +69,7 @@
     <p item-middle align="center" class="numbers">
       {{day.rvs}}
     </p>
-    <p item-right align="right">
+    <p  style="width:120px;" item-right align="right">
       <button ion-fab mini (click)="changeRecord('rvs', true)"><ion-icon name="add"></ion-icon></button>
       <button ion-fab mini (click)="changeRecord('rvs', false)"><ion-icon name="remove"></ion-icon></button>
     </p>

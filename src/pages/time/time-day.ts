@@ -119,32 +119,32 @@ export class TimeDayPage {
     this.ref.markForCheck();
   }
 
-  changeRecord(property:string, add:boolean){
+  changeRecord(property:string, add:boolean, amount:number = 1){
     if(property=='placement' && add)
-      this.day.placements++
+      this.day.placements+=amount;
     
     if(property=='placement'&& !add && this.day.placements > 0)
-      this.day.placements--;
+      this.day.placements-=amount;
 
     if(property=='videos' && add)
-      this.day.videos++
+      this.day.videos+=amount;
     
     if(property=='videos'&& !add && this.day.videos > 0)
-      this.day.videos--;
+      this.day.videos-=amount;
 
 
     if(property=='hours' && add)
-      this.day.hours++
+      this.day.hours+=amount;
     
     if(property=='hours'&& !add && this.day.hours > 0)
-      this.day.hours--;
+      this.day.hours-=amount;
 
 
     if(property=='rvs' && add)
-      this.day.rvs++
+      this.day.rvs+=amount;
     
     if(property=='rvs' && !add && this.day.rvs > 0)
-      this.day.rvs--;
+      this.day.rvs-=amount;
 
     this.ref.markForCheck();
   }
