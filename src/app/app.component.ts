@@ -32,8 +32,8 @@ export class MyApp {
       settings.load().then(res=>{
           //console.log("AppComponent -> Settings-> Load: "+JSON.stringify(res));
           console.log("App Component Load");
-
-          placements.syncData();
+  
+          placements.init();
 
           //test if we have any parameter data, this is for dropbox web login
           

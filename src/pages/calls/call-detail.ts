@@ -74,6 +74,7 @@ save(){
    console.log("setting up call back date"); 
    this.call.date =  moment().format('YYYY-MM-DD');
    this.ref.markForCheck();
+
  }
 
  addVisit(){

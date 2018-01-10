@@ -24,7 +24,7 @@ export class VisitPlacementsPage {
     //this.studyList = this.placemenets.getBooks().filter(doc=> (doc.category === 'study' && doc.type === 'book' ))
     //English
     this.categories = new Array<any>();
-    var cats =  this.placemenets.getDoc('pub/setup/e')['categories'];
+    var cats =  this.placemenets.config['categories'];
     let docs_e = this.placemenets.getDocs().filter(doc=> doc.language === 'E');
     cats.forEach(cat=>{
       let pubs = docs_e.filter(doc=> doc.pubType === cat.pubType);
@@ -32,8 +32,12 @@ export class VisitPlacementsPage {
         pubs = pubs.filter(doc => doc.category === cat.category)
 
       //now lets order them, for mags we need opposite
-      if(cat.pubType === 'mag')
+      if(cat.pubType === 'mag'){
         pubs.sort(this.sortMags);
+      }
+      else if(cat.pubType === 'settings'){
+          
+      }
       else
         pubs.sort(this.sortFunction);
 

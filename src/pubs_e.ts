@@ -1,4 +1,4 @@
-export function getConfig(){
+export function getData(){
 return [
 
 //setup 
@@ -18,6 +18,8 @@ return [
   ]
 
 },
+
+/*
 {
   "_id": "pub/setup/chs",
   "language": "Chinese",
@@ -33,7 +35,7 @@ return [
   ]
 
 },
-
+*/
 
 //videos
 {
